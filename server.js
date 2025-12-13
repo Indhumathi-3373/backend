@@ -1,7 +1,21 @@
-// const reqhandler=require('./routes') for one function importing
-const route=require('./routes')
-const http=require('http')
-console.log(route.sometext);
-console.log('nodemon is installed running cmd as --save-dev')
-const server=http.createServer(route.handler);
-server.listen(8080);
+const express=require('express')
+const mongoose=require('mongoose')
+const bodyparser=require('body-parser')
+const router=require('./routes')
+const logindiary=require('./loginroutes')
+
+const web=express()
+web.use(bodyparser.urlencoded({extended:true}))
+web.use(express.json())
+web.use(router)
+web.use(logindiary)
+mongoose.connect("mongodb://localhost:27017/create_account")
+.then(()=>{
+    console.log("mongodb connected")
+})
+.catch((err)=>{
+    console.log(err)
+})
+web.listen((8000),()=>{
+    console.log("server listening")
+})

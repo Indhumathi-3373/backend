@@ -10,3 +10,10 @@ yarn-debug.log*
 yarn-error.log*
 #os files
 .DS_Store
+
+#git status
+#C:\Users\INDHUMATHI C\Documents>cd GitHub
+#git rm -r --cached node_modules
+#git rm -r --cached -f node_modules
+#to add some files in git use git add filename
+#git commit -m "add gitignore and backend files"
