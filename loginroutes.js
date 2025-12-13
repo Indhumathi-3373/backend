@@ -16,4 +16,5 @@ routediary.post('/frontend/loginfordiary',async(req,res)=>{
     }
 res.json({message:"Login Successful"})
 })
+
 module.exports=routediary;
