@@ -1,14 +1,13 @@
 const express = require('express');
 const users = require('./models_db/users');
 const cors = require('cors');
-
 const routedoc = express.Router();
 routedoc.use(cors());
 routedoc.use(express.json());
-routedoc.use(express.urlencoded({ extended: true })); // fixed typo
+routedoc.use(express.urlencoded({ extended: true }));
 
-routedoc.post('/loginfordocument', async (req, res) => {
-    const { email, pass_doc } = req.body;  // destructure safely
+routedoc.post('/frontend/loginfordocument', async (req, res) => {
+    const { email, pass_doc } = req.body;  
     console.log(req.body);
 
     const emailverifydoc = await users.findOne({ email });
