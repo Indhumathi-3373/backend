@@ -9,9 +9,9 @@ web.use(cors())
 
 web.use(express.json())
 web.use(express.urlencoded({extend:true}))
-web.use('/frontend',router)
-web.use(logindiary)
- web.use(logindoc)
+web.use('/frontend', router);
+web.use('/frontend', logindiary); 
+web.use('/frontend', logindoc);
 mongoose.connect("mongodb://localhost:27017/create_account")
 .then(()=>{
     console.log("mongodb connected")
