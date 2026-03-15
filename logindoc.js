@@ -3,6 +3,7 @@ const users = require('./models_db/users');
 const cors = require('cors');
 const routedoc = express.Router();
 const bcrypt=require('bcrypt');
+const sessionTracker = require('./sessionTracker');
 routedoc.use(cors({
     origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
     credentials: true
@@ -27,6 +28,7 @@ if (!isMatch) return res.status(400).json({ message: 'Incorrect password' });
         email: emailverifydoc.email,
         scope: "document"
     };
+    sessionTracker.add(req.sessionID);
     return res.json({ message: "Login successful" });
 });
 
