@@ -4,11 +4,14 @@ const bcrypt = require('bcrypt');
 const routediary = express.Router();
 const cors = require('cors');
 
-routediary.use(cors());
+routediary.use(cors({
+    origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
+    credentials: true
+}));
 routediary.use(express.json());
 
 routediary.post('/loginfordiary', async (req, res) => {
-    console.log('Request body:', req.body);
+    
     try {
         const { email, pass_diary } = req.body;
 
@@ -24,6 +27,11 @@ routediary.post('/loginfordiary', async (req, res) => {
             return res.status(400).json({ message: "Incorrect Password" });
         }
 
+        req.session.user = {
+            id: emailverify._id.toString(),
+            email: emailverify.email,
+            scope: "diary"
+        };
         res.status(200).json({ message: "Login Successful" });
     } catch (error) {
         console.error('Caught error:', error);
