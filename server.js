@@ -4,6 +4,8 @@ const router=require('./routes')
 const logindiary=require('./loginroutes')
 const logindoc=require('./logindoc')
 const diaryroutes=require('./diaryroutes')
+const documentroutes=require('./documentroutes')
+const path=require('path')
 const cors=require('cors')
 const session=require('express-session')
 const web=express()
@@ -30,6 +32,8 @@ web.use('/frontend', router);
 web.use('/frontend', logindiary); 
 web.use('/frontend', logindoc);
 web.use('/frontend', diaryroutes);
+web.use('/frontend', documentroutes);
+web.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 web.get('/frontend/session', (req, res) => {
     if (req.session && req.session.user) {
