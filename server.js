@@ -34,7 +34,6 @@ web.use('/frontend', logindoc);
 web.use('/frontend', diaryroutes);
 web.use('/frontend', documentroutes);
 web.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 web.get('/frontend/session', (req, res) => {
     if (req.session && req.session.user) {
         return res.json({ authenticated: true, user: req.session.user });
