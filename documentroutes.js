@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const corsOptions = require('./corsOptions');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
@@ -7,16 +8,19 @@ const Document = require('./models_db/document');
 
 const documentRoutes = express.Router();
 
-documentRoutes.use(cors({
-  origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
-  credentials: true
-}));
+documentRoutes.use(cors(corsOptions));
 
 documentRoutes.use(express.json());
 
 documentRoutes.use('/documents', (req, res, next) => {
   if (!req.session || !req.session.user) {
     return res.status(401).json({ message: 'Not authenticated' });
+  }
+  const scopes = Array.isArray(req.session.user.scopes)
+    ? req.session.user.scopes
+    : (req.session.user.scope ? [req.session.user.scope] : []);
+  if (!scopes.includes('document')) {
+    return res.status(403).json({ message: 'Document login required' });
   }
   return next();
 });

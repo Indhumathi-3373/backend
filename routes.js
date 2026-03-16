@@ -2,11 +2,9 @@ const express =require('express')
 const users = require('./models_db/users')
 const router=express.Router()
 const cors=require('cors')
+const corsOptions = require('./corsOptions')
 const bcrypt=require('bcrypt')
-router.use(cors({
-    origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
-    credentials: true
-}));
+router.use(cors(corsOptions));
 router.use(express.json());
 router.post('/create_account', async (req, res) => {
     const { email, pass_diary, pass_doc } = req.body;

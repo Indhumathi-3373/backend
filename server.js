@@ -14,14 +14,15 @@ const users = require('./models_db/users')
 const Diary = require('./models_db/diary')
 const Document = require('./models_db/document')
 const Feedback = require('./models_db/feedback')
+const corsOptions = require('./corsOptions')
 const web=express()
-web.use(cors({
-    origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
-    credentials: true
-}))
+const frontendPath = path.join(__dirname, '..', 'frontend')
+const imagesPath = path.join(__dirname, '..', 'images')
+
+web.use(cors(corsOptions))
 
 web.use(express.json())
-web.use(express.urlencoded({extend:true}))
+web.use(express.urlencoded({extended:true}))
 //session handled here
 web.use(session({
     secret: process.env.SESSION_SECRET || "dev_secret_change_me",
@@ -41,15 +42,33 @@ web.use('/frontend', diaryroutes);
 web.use('/frontend', documentroutes);
 web.use('/frontend', feedbackroutes);
 web.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+web.use('/images', express.static(imagesPath))
+web.use(express.static(frontendPath))
 
 web.get('/frontend/session', (req, res) => {
     if (req.session && req.session.user) {
-        return res.json({ authenticated: true, user: req.session.user });
+        const user = req.session.user;
+        const scopes = Array.isArray(user.scopes)
+            ? user.scopes
+            : (user.scope ? [user.scope] : []);
+        return res.json({ authenticated: true, user: { ...user, scopes } });
     }
     return res.json({ authenticated: false });
 });
 
 web.post('/frontend/logout', (req, res) => {
+    const scope = req.body?.scope || req.query?.scope;
+    if (req.session && req.session.user && scope) {
+        const user = req.session.user;
+        const scopes = Array.isArray(user.scopes)
+            ? user.scopes
+            : (user.scope ? [user.scope] : []);
+        const nextScopes = scopes.filter((s) => s !== scope);
+        if (nextScopes.length > 0) {
+            req.session.user = { ...user, scopes: nextScopes };
+            return res.json({ message: "Logged out", scopes: nextScopes });
+        }
+    }
     sessionTracker.remove(req.sessionID);
     req.session.destroy(() => {
         res.clearCookie('connect.sid');
@@ -76,13 +95,15 @@ web.get('/frontend/admin/stats', async (req, res) => {
         res.status(500).json({ message: "Failed to load stats" });
     }
 });
-mongoose.connect("mongodb://localhost:27017/create_account")
+const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/create_account"
+mongoose.connect(mongoUri)
 .then(()=>{
     console.log("mongodb connected")
 })
 .catch((err)=>{
     console.log(err)
 })
-web.listen((8000),()=>{
-    console.log("server listening")
+const port = process.env.PORT || 8000
+web.listen(port,()=>{
+    console.log(`server listening on ${port}`)
 })
