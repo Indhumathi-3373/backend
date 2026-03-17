@@ -17,7 +17,7 @@ const Feedback = require('./models_db/feedback')
 const corsOptions = require('./corsOptions')
 const web=express()
 const frontendPath = path.join(__dirname, '..', 'frontend')
-const imagesPath = path.join(__dirname, '..', 'images')
+const imagesPath = path.join(__dirname, '..', 'frontend', 'public', 'images')
 
 web.use(cors(corsOptions))
 
