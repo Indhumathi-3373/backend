@@ -16,6 +16,8 @@ const Diary = require('./models_db/diary');
 const Document = require('./models_db/document');
 const Feedback = require('./models_db/feedback');
 const corsOptions = require('./corsOptions');
+const adminRoutes = require('./adminroutes');
+const { requireAdmin } = require('./adminAuth');
 
 const web = express();
 const frontendPath = path.join(__dirname, '..', 'frontend');
@@ -52,6 +54,7 @@ web.use('/frontend', logindoc);
 web.use('/frontend', diaryroutes);
 web.use('/frontend', documentroutes);
 web.use('/frontend', feedbackroutes);
+web.use('/frontend', adminRoutes);
 web.use('/uploads', express.static(uploadsPath));
 web.use('/images', express.static(imagesPath));
 web.use(express.static(frontendPath));
@@ -91,7 +94,7 @@ web.post('/frontend/logout', (req, res) => {
     });
 });
 
-web.get('/frontend/admin/stats', async (req, res) => {
+web.get('/frontend/admin/stats', requireAdmin, async (req, res) => {
     try {
         const [userCount, diaryCount, documentCount, feedbackCount] = await Promise.all([
             users.countDocuments(),

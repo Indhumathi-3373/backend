@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const corsOptions = require('./corsOptions');
 const Feedback = require('./models_db/feedback');
+const { requireAdmin } = require('./adminAuth');
 
 const feedbackRoutes = express.Router();
 
@@ -22,7 +23,7 @@ feedbackRoutes.post('/feedback', async (req, res) => {
   }
 });
 
-feedbackRoutes.get('/admin/feedback', async (req, res) => {
+feedbackRoutes.get('/admin/feedback', requireAdmin, async (req, res) => {
   try {
     const feedback = await Feedback.find({})
       .sort({ createdAt: -1 })
