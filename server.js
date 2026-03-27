@@ -1,3 +1,6 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
 const express = require('express');
 const mongoose = require('mongoose');
 const fs = require('fs');
@@ -7,7 +10,6 @@ const logindoc = require('./logindoc');
 const diaryroutes = require('./diaryroutes');
 const documentroutes = require('./documentroutes');
 const feedbackroutes = require('./feedbackroutes');
-const path = require('path');
 const cors = require('cors');
 const session = require('express-session');
 const sessionTracker = require('./sessionTracker');
